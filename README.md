@@ -62,7 +62,7 @@ Di tab "OAuth2" → "URL Generator":
 ## Instalasi
 ```bash
 # 
-git clone https://github.com/keks12pp/discord-bot.git cd discord-bot
+git clone https://github.com/keks12pp/discord-bot.git
 cd discord-bot
 
 # Install dependencies
