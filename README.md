@@ -60,7 +60,7 @@ Di tab "OAuth2" → "URL Generator":
 3. Free tier tersedia!
 
 ## Instalasi
-
+git clone https://github.com/keks12pp/discord-bot.git cd discord-bot
 ```bash
 # Masuk ke folder project
 cd discord-bot
@@ -176,7 +176,7 @@ Edit `systemPrompt` di fungsi `generateAIResponse()` untuk mengubah cara bot men
 
 ## Catatan Penting
 
-⚠️ **Security**: File `.env` SUDAH berisi credentials. Jangan commit ke git!
+⚠️ .env # Local environment variables (not included in repository)
 
 💡 **Best Practice**: 
 - Start dengan interval panjang (120s+) untuk testing
