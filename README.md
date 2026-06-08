@@ -60,9 +60,9 @@ Di tab "OAuth2" → "URL Generator":
 3. Free tier tersedia!
 
 ## Instalasi
-git clone https://github.com/keks12pp/discord-bot.git cd discord-bot
 ```bash
-# Masuk ke folder project
+# 
+git clone https://github.com/keks12pp/discord-bot.git cd discord-bot
 cd discord-bot
 
 # Install dependencies
