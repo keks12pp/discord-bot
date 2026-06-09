@@ -1,4 +1,5 @@
 const { Client, GatewayIntentBits, Partials } = require('discord.js');
+const { joinVoiceChannel } = require('@discordjs/voice');
 const OpenAI = require('openai');
 require('dotenv').config();
 
@@ -8,24 +9,27 @@ const client = new Client({
         GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildMessages,
         GatewayIntentBits.MessageContent,
-        GatewayIntentBits.DirectMessages
+        GatewayIntentBits.DirectMessages,
+        GatewayIntentBits.GuildVoiceStates
     ],
     partials: [Partials.Channel]
 });
 
-// Inisialisasi OpenAI
+// Inisialisasi OpenAI dengan konfigurasi dari environment
 const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY
+    apiKey: process.env.OPENAI_API_KEY,
+    baseURL: process.env.OPENAI_BASE_URL || undefined
 });
 
 // Konfigurasi bot
 const config = {
     token: process.env.DISCORD_TOKEN,
     autoChatChannelId: process.env.AUTO_CHAT_CHANNEL_ID,
+    autoVoiceChannelId: process.env.AUTO_VOICE_CHANNEL_ID,
     autoChatInterval: parseInt(process.env.AUTO_CHAT_INTERVAL) || 60,
     openaiApiKey: process.env.OPENAI_API_KEY,
     aiProvider: process.env.AI_PROVIDER || 'openai',
-    botName: 'linux',
+    botName: process.env.BOT_NAME || 'linux',
     personality: process.env.BOT_PERSONALITY || 'casual friendly Indonesian person who knows many topics, likes to join conversations, is knowledgeable about technology, life, and everyday topics. Responds naturally like a real human, uses Indonesian slang, emojis sometimes, and shows personality.'
 };
 
@@ -75,6 +79,13 @@ client.once('ready', () => {
     console.log(`• Auto chat interval: ${config.autoChatInterval} detik`);
     console.log(`• AI Provider: ${config.aiProvider}`);
     
+    // Auto join voice channel jika diatur
+    if (config.autoVoiceChannelId) {
+        joinVoiceChannelOnReady();
+    } else {
+        console.log('• Voice channel: Tidak diatur');
+    }
+    
     // Mulai auto chat jika channel ID tersedia dan API key ada
     if (config.autoChatChannelId && config.openaiApiKey && config.aiProvider === 'openai') {
         startAutoChat();
@@ -82,6 +93,32 @@ client.once('ready', () => {
         console.warn('⚠️ OpenAI API key tidak ditemukan. Mode fallback activated.');
     }
 });
+
+// Fungsi untuk auto join voice channel saat bot siap
+async function joinVoiceChannelOnReady() {
+    try {
+        const channel = await client.channels.fetch(config.autoVoiceChannelId);
+        if (channel && channel.isVoiceBased()) {
+            const connection = joinVoiceChannel({
+                channelId: channel.id,
+                guildId: channel.guild.id,
+                adapterCreator: channel.guild.voiceAdapterCreator,
+            });
+            console.log(`🎤 Join voice channel: ${channel.name} (${channel.guild.name})`);
+            
+            // Handle disconnection / cleanup
+            connection.on('stateChange', (oldState, newState) => {
+                if (newState.status === 'disconnected') {
+                    console.log('🎤 Disconnected from voice channel');
+                }
+            });
+        } else {
+            console.warn(`⚠️ Voice channel dengan ID ${config.autoVoiceChannelId} tidak ditemukan atau bukan voice channel.`);
+        }
+    } catch (error) {
+        console.error('[Voice Error] Gagal join voice channel:', error.message);
+    }
+}
 
 // Fungsi untuk mendapatkan random item dari array
 function getRandomItem(array) {
@@ -152,12 +189,12 @@ function generateFallbackResponse(message, username) {
             `Wkwk bener juga! Gue setuju banget`,
             `Wait wait, ini menarik. Jelasin lebih detail dong!`,
             `Hmm oke, kalau menurut gue sih... tapi lo dulu mah!`,
-            `hallo linux! Gimana kabarnya? Apa yang lagi lo pikirin?`,
+            `hallo ${config.botName}! Gimana kabarnya? Apa yang lagi lo pikirin?`,
             `Yoiyoi! Ada apa nih?`,
             `Ngomong-ngomong, lo tau nggak sih... *random fact*`,
             `Santai dulu, cerita aja. Siapa tau gue bisa kasih perspective`,
             `Kok jadi bahs ini sih? Tapi interesting btw, lanjutkan!`,
-            `hallo linux! Selamat datang di server ini!`
+            `hallo ${config.botName}! Selamat welcome di server ini!`
         ]
     };
     
@@ -195,9 +232,9 @@ async function generateAIResponse(message, username, channelId) {
         // Add current message
         messages.push({ role: 'user', content: message });
         
-        // Call OpenAI API
+        // Call OpenAI API dengan model dari environment
         const completion = await openai.chat.completions.create({
-            model: 'gpt-4o-mini',
+            model: process.env.OPENAI_MODEL || 'gpt-4o-mini',
             messages: messages,
             temperature: 0.7,
             max_tokens: 500
