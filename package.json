@@ -8,11 +8,17 @@
     "dev": "node --watch index.js"
   },
   "dependencies": {
+    "@discordjs/voice": "^0.19.2",
     "discord.js": "^14.14.1",
     "dotenv": "^16.3.1",
     "openai": "^4.28.0"
   },
-  "keywords": ["discord", "bot", "auto-chat", "auto-reply"],
+  "keywords": [
+    "discord",
+    "bot",
+    "auto-chat",
+    "auto-reply"
+  ],
   "author": "",
   "license": "MIT"
 }
