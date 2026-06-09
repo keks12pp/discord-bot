@@ -208,10 +208,6 @@ Edit `systemPrompt` di fungsi `generateAIResponse()` untuk mengubah cara bot men
 - ❌ Quota exceeded → Tunggu atau upgrade plan
 - ⚠️ Fallback mode aktif → Bot tetap jalan dengan template responses
 
-## Catatan Penting
-
-⚠️ **Security**: File `.env` SUDAH berisi credentials. Jangan commit ke git!
-
 💡 **Best Practice**: 
 - Start dengan interval panjang (120s+) untuk testing
 - Monitor API usage di dashboard OpenAI atau Dashscope
@@ -219,4 +215,4 @@ Edit `systemPrompt` di fungsi `generateAIResponse()` untuk mengubah cara bot men
 
 ---
 
-**Created by linux** 🐧 | Happy chatting!
+**Created by keks** 🐧 | Happy chatting!
