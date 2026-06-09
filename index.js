@@ -304,9 +304,21 @@ client.on('messageCreate', async (message) => {
     if (!message.content) return;
     
     const username = message.author.username;
-    const cleanContent = stripMentions(message.content, client.user.id);
     
     console.log(`[${username}] ${message.channel.name}: ${message.content}`);
+    
+    // Hanya respon jika pesan dimulai dengan !ai
+    if (!message.content.toLowerCase().startsWith('!ai')) {
+        return; // Abaikan pesan yang bukan command !ai
+    }
+    
+    // Extract pesan setelah !ai
+    const aiPrompt = message.content.slice(3).trim();
+    
+    if (!aiPrompt) {
+        await message.reply('Yo! Ketik pertanyaan atau topik setelah `!ai`. Contoh: `!ai cara belajar javascript`');
+        return;
+    }
     
     try {
         let reply;
@@ -314,25 +326,21 @@ client.on('messageCreate', async (message) => {
         // Check if using OpenAI
         if (config.openaiApiKey && config.aiProvider === 'openai') {
             // Use AI for intelligent response
-            reply = await generateAIResponse(cleanContent, username, message.channelId);
+            reply = await generateAIResponse(aiPrompt, username, message.channelId);
             
             if (!reply) {
                 // Fallback to simple response if AI fails
-                reply = generateFallbackResponse(cleanContent, username);
+                reply = generateFallbackResponse(aiPrompt, username);
             }
         } else {
             // Fallback mode without AI
-            reply = generateFallbackResponse(cleanContent, username);
+            reply = generateFallbackResponse(aiPrompt, username);
         }
         
-        // Reply with mention (if not DM)
-        if (message.guild) {
-            await message.reply(`${reply}`);
-        } else {
-            await message.reply(`${reply}`);
-        }
+        // Reply dengan reference ke pesan user
+        await message.reply(reply);
         
-        console.log(`[Bot Reply] ${reply}`);
+        console.log(`[Bot Reply !ai] ${reply}`);
     } catch (error) {
         console.error('[Reply Error]', error.message);
     }
