@@ -1,11 +1,11 @@
 # Discord Auto Task Bot - AI Powered 🤖
 
-Bot Discord menggunakan Node.js dan discord.js yang memiliki fitur auto chat dan auto reply dengan **Google Gemini AI**. Bot ini akan bertingkah seperti manusia normal yang bisa ngobrol natural tentang berbagai topik!
+Bot Discord menggunakan Node.js dan discord.js yang memiliki fitur auto chat dan auto reply dengan **OpenAI API atau OpenAI-compatible services** (seperti Dashscope/DeepSeek). Bot ini akan bertingkah seperti manusia normal yang bisa ngobrol natural tentang berbagai topik!
 
 ## 🎯 Fitur Utama
 
-### 1. **Google Gemini AI-Powered Conversation** ⭐
-- Bot merespons dengan Google Gemini AI untuk percakapan natural
+### 1. **OpenAI/DeepSeek AI-Powered Conversation** ⭐
+- Bot merespons dengan OpenAI API atau OpenAI-compatible services (Dashscope/DeepSeek) untuk percakapan natural
 - Bisa ngobrol tentang berbagai topik: teknologi, gaming, makanan, hiburan, kehidupan sehari-hari
 - Menyimpan history percakapan untuk kontek yang lebih baik
 - Personality: Casual friendly Indonesian person yang suka ikut nimbrung ngobrol
@@ -20,7 +20,12 @@ Bot Discord menggunakan Node.js dan discord.js yang memiliki fitur auto chat dan
 - Respond seperti manusia dengan bahasa Indonesia kasual
 - Tidak butuh command/perintah khusus - langsung ngobrol natural
 
-### 4. **Fallback Mode** 🔧
+### 4. **Auto Join Voice Channel** 🎤
+- Bot otomatis join voice channel saat start
+- Cukup set `AUTO_VOICE_CHANNEL_ID` di `.env`
+- Tetap di voice channel selama bot online
+
+### 5. **Fallback Mode** 🔧
 - Kalau API key tidak ada, bot tetap jalan dengan template responses
 - Bagus untuk testing atau kalau mau hemat API cost
 
@@ -43,6 +48,8 @@ Di tab "OAuth2" → "URL Generator":
   - `Send Messages`
   - `Read Message History`
   - `Send Messages in Threads`
+  - `Connect` (untuk voice channel)
+  - `Speak` (untuk voice channel)
 - Copy URL dan buka di browser
 - Pilih server dan authorize
 
@@ -53,16 +60,20 @@ Di tab "OAuth2" → "URL Generator":
 3. Klik kanan pada channel yang diinginkan untuk bot chat/reply
 4. Pilih "Copy Channel ID"
 
-### 4. Dapatkan Google Gemini API Key (untuk AI feature)
+### 4. Dapatkan OpenAI API Key atau OpenAI-Compatible Service
 
-1. Daftar di [Google AI Studio](https://aistudio.google.com/)
-2. Buat API key di [API Keys page](https://aistudio.google.com/apikey)
-3. Free tier tersedia!
+Untuk menggunakan OpenAI API:
+1. Daftar di [OpenAI](https://openai.com/)
+2. Buat API key di [API Keys page](https://platform.openai.com/api-keys)
+
+Untuk menggunakan OpenAI-compatible services (Dashscope/DeepSeek):
+1. Daftar di [Dashscope](https://www.aliyun.com/product/dashscope) (DeepSeek)
+2. Buat API key di dashscope console
 
 ## Instalasi
+
 ```bash
-# 
-git clone https://github.com/keks12pp/discord-bot.git
+# Masuk ke folder project
 cd discord-bot
 
 # Install dependencies
@@ -71,17 +82,30 @@ npm install
 
 ## Konfigurasi
 
-1. File `.env` sudah dikonfigurasi dengan token Anda. Jika perlu ubah:
+1. Copy `.env.example` ke `.env` dan ubah dengan nilai yang sesuai:
 
 ```env
-DISCORD_TOKEN=your_token
-GEMINI_API_KEY=your_gemini_api_key_here
+DISCORD_TOKEN=your_bot_token_here
+OPENAI_API_KEY=your_openai_api_key_here
+OPENAI_BASE_URL=https://api.openai.com/v1
+OPENAI_MODEL=gpt-4o-mini
 AUTO_CHAT_CHANNEL_ID=your_channel_id_here
+AUTO_VOICE_CHANNEL_ID=your_voice_channel_id_here
 AUTO_CHAT_INTERVAL=60
-BOT_PERSONALITY= bebas isi apa aja 
+AI_PROVIDER=openai
+BOT_NAME=linux
+BOT_PERSONALITY=casual friendly Indonesian person who knows many topics, likes to join conversations, and responds naturally like a real person
 ```
 
-**Note**: Isi `AUTO_CHAT_CHANNEL_ID` jika ingin bot aktif auto chat. Kosongkan jika hanya ingin bot reply saat dimention/chat.
+**Note**: Isi `AUTO_CHAT_CHANNEL_ID` jika ingin bot aktif auto chat. Kosongkan jika hanya ingin bot reply saat dimention/chat. Isi `AUTO_VOICE_CHANNEL_ID` jika ingin bot auto join voice channel saat start.
+
+**Untuk OpenAI-compatible services (Dashscope/DeepSeek):**
+```
+OPENAI_API_KEY=your_dashscope_api_key_here
+OPENAI_BASE_URL=https://dashscope-intl.aliyuncs.com/compatible-mode/v1
+OPENAI_MODEL=deepseek-v3.2
+AI_PROVIDER=openai
+```
 
 ## Menjalankan Bot
 
@@ -106,7 +130,7 @@ Bot akan otomatis kirim pesan setiap interval yang ditentukan:
 ### Auto Reply
 Setiap kali ada orang chat di channel, bot akan:
 1. Baca pesan user
-2. Proses dengan Google Gemini AI (atau fallback template)
+2. Proses dengan OpenAI/DeepSeek AI (atau fallback template)
 3. Balas dengan respon natural seperti manusia
 4. Simpan conversation history untuk konteks
 
@@ -126,7 +150,7 @@ Bot: Sip sip! Sama-sama ya. Semangat terus buat projectnya, pasti lancar jaya! �
 
 ```
 discord-bot/
-├── index.js          # Main bot code dengan Gemini AI integration
+├── index.js          # Main bot code dengan OpenAI AI integration
 ├── package.json      # Project dependencies
 ├── .env.example      # Template environment variables
 ├── .env              # Your actual env vars (DONE - already configured!)
@@ -154,6 +178,7 @@ Edit `systemPrompt` di fungsi `generateAIResponse()` untuk mengubah cara bot men
 2. **Hemat API Cost**: Naikkan `AUTO_CHAT_INTERVAL` biar nggak terlalu sering chat
 3. **Multi Channel**: Clone config untuk support multiple channels
 4. **Conversation Memory**: History tersimpan selama bot running (reset saat restart)
+5. **Voice Channel**: Set `AUTO_VOICE_CHANNEL_ID` jika ingin bot selalu online di voice channel
 
 ## Troubleshooting
 
@@ -169,18 +194,26 @@ Edit `systemPrompt` di fungsi `generateAIResponse()` untuk mengubah cara bot men
 - ❌ Channel ID salah → Copy ulang dengan Developer Mode
 - ❌ Bot tidak akses channel → Check channel permissions
 
+### Voice channel tidak join
+- ❌ `AUTO_VOICE_CHANNEL_ID` kosong → Isi dengan ID voice channel
+- ❌ Permission `Connect` atau `Speak` tidak ada → Update permission invite bot
+- ❌ Channel ID bukan voice channel → Pastikan ID channel adalah voice channel
+- ❌ Bot tidak punya akses ke channel → Check channel permissions
+
 ### AI response error
-- ❌ Gemini API Key salah → Generate baru di Google AI Studio
+- ❌ OpenAI API Key salah → Generate baru di OpenAI atau Dashscope
+- ❌ OPENAI_BASE_URL salah → Gunakan URL yang sesuai dengan provider API Anda
+- ❌ OPENAI_MODEL tidak sesuai → Pastikan model yang dipilih sesuai dengan API provider
 - ❌ Quota exceeded → Tunggu atau upgrade plan
 - ⚠️ Fallback mode aktif → Bot tetap jalan dengan template responses
 
 ## Catatan Penting
 
-⚠️ .env # Local environment variables (not included in repository)
+⚠️ **Security**: File `.env` SUDAH berisi credentials. Jangan commit ke git!
 
 💡 **Best Practice**: 
 - Start dengan interval panjang (120s+) untuk testing
-- Monitor API usage di dashboard Google AI Studio
+- Monitor API usage di dashboard OpenAI atau Dashscope
 - Keep bot personality consistent untuk better UX
 
 ---
