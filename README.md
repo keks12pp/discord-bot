@@ -154,7 +154,7 @@ discord-bot/
 ├── index.js          # Main bot code dengan OpenAI AI integration
 ├── package.json      # Project dependencies
 ├── .env.example      # Template environment variables
-├── .env              # Your actual env vars (DONE - already configured!)
+├── .env              # Your actual env vars
 ├── .gitignore        # Git ignore rules
 └── README.md         # This file
 ```
