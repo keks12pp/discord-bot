@@ -89,7 +89,7 @@ npm install
 DISCORD_TOKEN=your_bot_token_here
 OPENAI_API_KEY=your_openai_api_key_here
 OPENAI_BASE_URL=https://api.openai.com/v1
-OPENAI_MODEL=gpt-4o-mini
+OPENAI_MODEL=
 AUTO_CHAT_CHANNEL_ID=your_channel_id_here
 AUTO_VOICE_CHANNEL_ID=your_voice_channel_id_here
 AUTO_CHAT_INTERVAL=60
