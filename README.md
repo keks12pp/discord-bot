@@ -73,7 +73,8 @@ Untuk menggunakan OpenAI-compatible services (Dashscope/DeepSeek):
 ## Instalasi
 
 ```bash
-# Masuk ke folder project
+# git clone https://github.com/keks12pp/discord-bot.git
+Masuk ke folder project
 cd discord-bot
 
 # Install dependencies
