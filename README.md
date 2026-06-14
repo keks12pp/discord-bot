@@ -1,4 +1,4 @@
-# Discord Auto Task Bot - AI Powered 🤖
+# Discord Auto Task Bot 🤖
 
 Bot Discord menggunakan Node.js dan discord.js yang memiliki fitur auto chat dan auto reply dengan **OpenAI API atau OpenAI-compatible services** (seperti Dashscope/DeepSeek). Bot ini akan bertingkah seperti manusia normal yang bisa ngobrol natural tentang berbagai topik!
 
